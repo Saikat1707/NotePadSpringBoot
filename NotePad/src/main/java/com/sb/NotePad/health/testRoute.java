@@ -2,7 +2,10 @@ package com.sb.NotePad.health;
 
 import com.sb.NotePad.dto.ApiResponseDTO;
 import com.sb.NotePad.dto.NoteDTO;
+import com.sb.NotePad.dto.UserDTO;
+import com.sb.NotePad.entities.User;
 import com.sb.NotePad.service.NoteService;
+import com.sb.NotePad.service.UserService;
 import com.sb.NotePad.serviceImpl.NoteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,8 @@ import java.util.List;
 public class testRoute {
     @Autowired
     NoteService noteService;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDTO<List<NoteDTO>>> test(@PathVariable int id){
@@ -31,4 +36,15 @@ public class testRoute {
                 new ApiResponseDTO<>(true,"Successfully get all the notes",noteDTOList);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<ApiResponseDTO<UserDTO>> test2(@PathVariable int id){
+        UserDTO userDTO = userService.getUserById(id);
+
+        ApiResponseDTO<UserDTO> response =
+                new ApiResponseDTO<>(true,"Successfully get the user",userDTO);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
