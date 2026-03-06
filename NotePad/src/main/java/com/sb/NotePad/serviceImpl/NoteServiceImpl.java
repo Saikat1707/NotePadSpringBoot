@@ -35,13 +35,14 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteDTO createNote(NoteDTO noteDTO) {
+    public NoteDTO createNote(NoteDTO noteDTO,int userId) {
         Note note = NoteMapper.toNote(noteDTO);
-        Integer userId = noteDTO.getUserId();
         User user = userRepo.findById(userId)
                 .orElseThrow(()->new RuntimeException("User not found"));
         note.setUser(user);
-        return NoteMapper.toNoteDto(note);
+
+        Note savedNote = noteRepo.save(note);
+        return NoteMapper.toNoteDto(savedNote);
     }
 
     @Override
@@ -60,5 +61,25 @@ public class NoteServiceImpl implements NoteService {
                         .map(NoteMapper::toNoteDto)
                         .toList();
         return noteDTOList;
+    }
+
+    @Override
+    public NoteDTO updateNote(NoteDTO noteDTO, int noteId) {
+        Note note = noteRepo.findById(noteId)
+                .orElseThrow(()->new RuntimeException("Resource not found"));
+        note.setTitle(noteDTO.getTitle());
+        note.setDesc(noteDTO.getDesc());
+
+        Note updatedNote=noteRepo.save(note);
+        return NoteMapper.toNoteDto(updatedNote);
+    }
+
+    @Override
+    public boolean deleteNote(int noteId) {
+        if(noteRepo.existsById(noteId)) {
+            noteRepo.deleteById(noteId);
+            return true;
+        }
+        return false;
     }
 }
