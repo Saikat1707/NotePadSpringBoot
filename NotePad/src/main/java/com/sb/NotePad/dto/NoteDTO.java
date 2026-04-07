@@ -8,10 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class NoteDTO {
-    private int id;
+    private Integer id;
     private String title;
     private String desc;
-    private int userId;
+    private Integer userId;
     private String createdByUserName;
     private String createdByUserEmail;
 

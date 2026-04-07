@@ -76,10 +76,10 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public boolean deleteNote(int noteId) {
-        if(noteRepo.existsById(noteId)) {
-            noteRepo.deleteById(noteId);
-            return true;
-        }
-        return false;
+
+        Note note = noteRepo.findById(noteId)
+                .orElseThrow(() -> new RuntimeException("Note not found"));
+        noteRepo.delete(note);
+        return true;
     }
 }

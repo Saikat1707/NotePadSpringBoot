@@ -4,6 +4,7 @@ import com.sb.NotePad.dto.NoteDTO;
 import com.sb.NotePad.entities.Note;
 
 public class NoteMapper {
+
     public static Note toNote(NoteDTO noteDTO){
         Note note = new Note();
 
@@ -12,14 +13,17 @@ public class NoteMapper {
 
         return note;
     }
+
     public static NoteDTO toNoteDto(Note note){
         NoteDTO noteDTO = new NoteDTO();
 
+        noteDTO.setId(note.getId());  // ⭐ FIX
         noteDTO.setTitle(note.getTitle());
         noteDTO.setDesc(note.getDesc());
+
+        noteDTO.setUserId(note.getUser().getId());
         noteDTO.setCreatedByUserName(note.getUser().getName());
         noteDTO.setCreatedByUserEmail(note.getUser().getEmail());
-        noteDTO.setUserId(note.getUser().getId());
 
         return noteDTO;
     }

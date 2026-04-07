@@ -26,6 +26,7 @@ public class UserController {
             @RequestBody UserDTO userDTO,
             @PathVariable int id
     ){
+        System.out.println(userDTO);
         UserDTO updatedUser = userService.updateUserById(userDTO,id);
         ApiResponseDTO<UserDTO> responseDTO =
                 new ApiResponseDTO<>(true,"Successfully update the user",updatedUser);

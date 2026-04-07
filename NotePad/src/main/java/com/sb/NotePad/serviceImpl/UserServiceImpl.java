@@ -26,9 +26,9 @@ public class UserServiceImpl implements UserService {
         User userToBeUpdate = userRepo.findById(userId)
                 .orElseThrow(()->new RuntimeException("User not found"));
 
-        userToBeUpdate.setName(userDTO.getName());
-        userToBeUpdate.setEmail(userDTO.getEmail());
-        userToBeUpdate.setPassword(userDTO.getPassword());
+        if(userDTO.getName() != null)userToBeUpdate.setName(userDTO.getName());
+        if(userDTO.getEmail() != null)userToBeUpdate.setEmail(userDTO.getEmail());
+        if(userDTO.getPassword() != null)userToBeUpdate.setPassword(userDTO.getPassword());
 
         User user = userRepo.save(userToBeUpdate);
 
