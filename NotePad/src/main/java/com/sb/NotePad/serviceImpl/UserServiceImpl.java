@@ -39,11 +39,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUserById(int userId) {
-        if(userRepo.existsById(userId)){
-            userRepo.deleteById(userId);
-            return true;
-        }
-        return false;
+        User user = userRepo.findById(userId)
+                .orElseThrow(()->new RuntimeException("User Not found with this id"));
+        user.setAccountEnabled(false);
+        userRepo.save(user);
+        return true;
     }
 
     public List<UserDTO> getAllUsers(){
