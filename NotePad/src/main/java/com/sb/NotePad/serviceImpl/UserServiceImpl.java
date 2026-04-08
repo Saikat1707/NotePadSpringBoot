@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -43,4 +45,29 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    public List<UserDTO> getAllUsers(){
+        List<User> userList = userRepo.findAll();
+        List<UserDTO> userDTOList =
+                userList.stream()
+                        .map((user)->UserMapper.toUserDto(user))
+                        .toList();
+        return userDTOList;
+    }
+
+    @Override
+    public UserDTO createUser(UserDTO dto) {
+        if(userRepo.existsByEmail(dto.getEmail())){
+            throw new RuntimeException("Email already exists");
+        }
+        User user = new User();
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        user.setNotes(List.of());
+        User savedUser = userRepo.save(user);
+        return UserMapper.toUserDto(savedUser);
+    }
+
+
 }

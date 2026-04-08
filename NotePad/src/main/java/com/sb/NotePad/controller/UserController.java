@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -48,6 +50,28 @@ public class UserController {
                     new ApiResponseDTO<>(false, "User not found", false);
             return ResponseEntity.status(404).body(responseDTO);
         }
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<ApiResponseDTO<List<UserDTO>>> getAllUsers(){
+        ApiResponseDTO<List<UserDTO>> api = new ApiResponseDTO<>(
+              true,
+              "Successfully get the user",
+              userService.getAllUsers()
+        );
+        return ResponseEntity.status(200).body(api);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponseDTO<UserDTO>> createUser(
+            @RequestBody UserDTO dto
+    ){
+        ApiResponseDTO<UserDTO> api = new ApiResponseDTO<>(
+                true,
+                "Successfully create the user",
+                userService.createUser(dto)
+        );
+        return ResponseEntity.status(200).body(api);
     }
 
 }

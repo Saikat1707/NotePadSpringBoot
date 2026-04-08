@@ -10,7 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class UserDTO {
-    private Integer id;
     private String name;
     private String email;
     private String password;
