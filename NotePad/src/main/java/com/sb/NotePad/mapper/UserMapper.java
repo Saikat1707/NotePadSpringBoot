@@ -3,6 +3,7 @@ package com.sb.NotePad.mapper;
 import com.sb.NotePad.dto.NoteDTO;
 import com.sb.NotePad.dto.UserDTO;
 import com.sb.NotePad.entities.Note;
+import com.sb.NotePad.entities.Role;
 import com.sb.NotePad.entities.User;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class UserMapper {
 
         noteList.forEach(note -> note.setUser(user));
         user.setNotes(noteList);
+        user.setRole(Role.valueOf(userDTO.getRole()));
+        user.setAccountEnabled(userDTO.getIsAccountEnabled());
 
         return user;
     }
@@ -39,6 +42,9 @@ public class UserMapper {
                                     .map(note -> NoteMapper.toNoteDto(note))
                                     .toList();
         userDTO.setNotes(noteDTOList);
+        userDTO.setRole(user.getRole().toString());
+        userDTO.setIsAccountEnabled(user.isAccountEnabled());
+
         return userDTO;
     }
 }

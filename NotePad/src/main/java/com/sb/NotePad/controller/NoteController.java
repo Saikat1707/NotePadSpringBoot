@@ -16,7 +16,7 @@ public class NoteController {
     @Autowired
     NoteService noteService;
 
-    @GetMapping("/")
+    @GetMapping("/get-all")
     public ResponseEntity<ApiResponseDTO<List<NoteDTO>>> getAllNotes() {
 
         List<NoteDTO> noteDTOList = noteService.getAllNotes();
@@ -41,7 +41,7 @@ public class NoteController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/{noteId}")
+    @GetMapping("/get/{noteId}")
     public ResponseEntity<ApiResponseDTO<NoteDTO>> getNoteById(
             @PathVariable int noteId
     ) {

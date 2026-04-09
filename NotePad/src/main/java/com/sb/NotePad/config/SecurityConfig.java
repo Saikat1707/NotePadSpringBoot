@@ -22,7 +22,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/register").permitAll()
                  .requestMatchers("/error").permitAll()   // ⭐ add this
-                .requestMatchers("/note/**").permitAll()
+                .requestMatchers("/note/get-all").permitAll()
                 .anyRequest().authenticated()
         );
 
