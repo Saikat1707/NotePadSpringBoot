@@ -1,12 +1,23 @@
 package com.sb.NotePad.security;
 
+import com.sb.NotePad.entities.User;
+import com.sb.NotePad.repository.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+    private final UserRepo userRepo;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null; 
+        User user = userRepo.findByEmail(username)
+                .orElseThrow(()->new RuntimeException("User not found with this email"));
+
+        return user;
     }
 }

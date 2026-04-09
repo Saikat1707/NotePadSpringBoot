@@ -1,6 +1,5 @@
 package com.sb.NotePad.entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "notes")   // avoid infinite recursion
 public class User implements UserDetails {
 
     @Id
@@ -24,14 +23,17 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+
+    @Column(nullable = false, unique = true) // email should be unique
     private String email;
+
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Note> notes;
 
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     private boolean isAccountEnabled = true;
@@ -40,13 +42,13 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         return List.of(
-                new SimpleGrantedAuthority(this.role.name())
+                new SimpleGrantedAuthority("ROLE_" + role.name())
         );
     }
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.email;   // login using email
     }
 
     @Override
