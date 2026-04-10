@@ -1,32 +1,51 @@
 package com.sb.NotePad.config;
+import com.sb.NotePad.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
-        http.csrf(AbstractHttpConfigurer::disable);
-
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/register").permitAll()
-                 .requestMatchers("/error").permitAll()   // ⭐ add this
-                .requestMatchers("/note/get-all").permitAll()
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/auth/login",
+                                "/auth/register",
+                                "/auth/refresh",
+                                "/auth/logout"
+                        ).permitAll()
+                    .requestMatchers("/note/get-all").permitAll()
                 .anyRequest().authenticated()
-        );
-
-        http.httpBasic(Customizer.withDefaults());
+        ).exceptionHandling(ex->ex.authenticationEntryPoint(
+                (request, response, e) -> {
+                    e.printStackTrace();
+                    response.setStatus(401);
+                    response.setContentType("application/json");
+                    String message = "Unauthorized Access! "+e.getMessage();
+                    response.getWriter().write(message);
+                }))
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
         return http.build();
     }
 
@@ -37,21 +56,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
-
-
-
-
-
-//    @Bean
-//    public UserDetailsService users(){
-//        User.UserBuilder userBuilder = User.withDefaultPasswordEncoder();
-//        UserDetails user1 = userBuilder.username("saikat").password("abc").roles("ADMIN").build();
-//        UserDetails user2 = userBuilder.username("sweety").password("xyz").roles("ADMIN").build();
-//        UserDetails user3 = userBuilder.username("sourav").password("pqr").roles("ADMIN").build();
-//        return new InMemoryUserDetailsManager(user1,user2,user3);
-//    }
-
-
 
 }

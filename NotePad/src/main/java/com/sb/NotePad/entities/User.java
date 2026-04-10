@@ -38,6 +38,12 @@ public class User implements UserDetails {
 
     private boolean isAccountEnabled = true;
 
+
+
+
+
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
