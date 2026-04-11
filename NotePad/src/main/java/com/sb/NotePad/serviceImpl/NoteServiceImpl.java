@@ -68,7 +68,7 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepo.findById(noteId)
                 .orElseThrow(()->new RuntimeException("Resource not found"));
         note.setTitle(noteDTO.getTitle());
-        note.setDesc(noteDTO.getDesc());
+        note.setDescription(noteDTO.getDesc());
 
         Note updatedNote=noteRepo.save(note);
         return NoteMapper.toNoteDto(updatedNote);
